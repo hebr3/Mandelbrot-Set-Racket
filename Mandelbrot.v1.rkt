@@ -24,14 +24,33 @@
 
 ;; PROCEDURES
 
-;; Complex -> Boolean
-;; Predicate that determines whether a given complex
+;; Posn -> Posn
+;; Squares a posn using the rules for squaring a complex number
+(define (sqr-posn pt)
+  (let [(x (first pt))
+        (y (second pt))]
+    (list (- (sqr x) (sqr y))
+          (+ (* 2 x y)))))
+
+;; Posn Posn -> Posn
+;; Addes two posn using the rules for adding complex numbers
+(define (posn+ pt1 pt2)
+  (list (+ (first pt1) (first pt2))
+        (+ (second pt1) (second pt2))))
+
+;; Posn -> Distance
+;; Calculate the magnitude of a posn using rules for complex numbers 
+(define (mag-posn pt)
+  (sqrt (+ (sqr (first pt)) (sqr (second pt)))))
+
+;; Posn -> Boolean
+;; Predicate that determines whether a given Posn (complex)
 ;; number is in the Mandelbrot set.
 (define (mandelbrot? c)
   (define (iter z count)
-    (cond [(> (magnitude z) 2) #f]
-          [(> count 10) #t]
-          [else (iter (+ c (sqr z)) (add1 count))]))
+    (cond [(> (mag-posn z) 2) #f]
+          [(> count 7) #t]
+          [else (iter (posn+ c (sqr-posn z)) (add1 count))]))
   (iter c 0)) 
 
 ;; Creates a range of numbers to represent all pixels
@@ -72,9 +91,8 @@
 ;; '(0 0) -> '(1 1)
 ;; '(299 199) -> '(-2 1)
 (define (convert pt)
-  (rectangular->complex
-   (list (+ (* -3 (/ (first pt) WIDTH)) 1)
-         (- (* 2 (/ (second pt) HEIGHT)) 1))))
+  (list (+ (* -3 (/ (first pt) WIDTH)) 1)
+        (- (* 2 (/ (second pt) HEIGHT)) 1)))
 
 ;; Generate an image of the Mandelbrot set usings foldr
 ;; and the mandelbrot? predicate
@@ -87,9 +105,9 @@
 
 ;; Time required to generate the image based on count limit
 ;; in mandelbrot? function.
-;; count > 6  --> ~19sec
-;; count > 7  --> ~30sec
-;; count > 8  --> ~51sec
-;; count > 9  --> ~95sec
-;; count > 10 --> ~232sec
-;; count > 11 --> ~574sec
+;; count > 6  --> ~20sec
+;; count > 7  --> ~31sec
+;; count > 8  --> ~55sec
+;; count > 9  --> ~119sec
+;; count > 10 --> ~264sec
+;; count > 11 --> ~702sec
