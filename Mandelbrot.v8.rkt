@@ -73,6 +73,12 @@
 (define (scaled-y y)
   (+ (* -2 (/ y HEIGHT)) 1))
 
+
+;;;;;;;;;;;
+(define c (current-inexact-milliseconds))
+;;;;;;;;;;;
+
+
 ;; Generates image
 (define M-Image
   (map-image
@@ -87,6 +93,10 @@
 
 M-Image
 
+;;;;;;;;;;;
+(define d (current-inexact-milliseconds))
+(/ (- d c) 1000)
+;;;;;;;;;;;
 
 ;; Time required to generate the list of pixel locations and 
 ;; related Mandelbrot escape values.
